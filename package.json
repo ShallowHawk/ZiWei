@@ -1,0 +1,13 @@
+{
+  "name": "ziwei-openclaw-skill",
+  "version": "0.1.0",
+  "private": true,
+  "description": "OpenClaw 紫微斗数 Skill，基于 iztro 排盘并支持真太阳时换算。",
+  "scripts": {
+    "chart": "node skills/ziwei-doushu/scripts/ziwei.js",
+    "test:sample": "node skills/ziwei-doushu/scripts/ziwei.js --date 1990-05-15 --time 14:30 --gender male --place 北京"
+  },
+  "dependencies": {
+    "iztro": "^2.5.8"
+  }
+}
