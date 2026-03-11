@@ -1,196 +1,163 @@
 # ZiWei
 
-基于 `iztro` 的紫微斗数 OpenClaw Skill。
+基于 `iztro` 的紫微斗数 OpenClaw Skill 与可测试排盘工具链。
 
-这个仓库提供一套可直接放进 OpenClaw 使用的 skill，目标是让用户只需要输入：
+本次实做重点已经落地：
 
-- 出生日期
-- 出生时间
-- 性别
-- 出生地
-
-就能得到：
-
-- 真太阳时修正结果
-- 紫微斗数十二宫盘面
-- 命宫 / 财帛 / 官禄 / 夫妻等重点宫位摘要
-- 适合继续交给大模型扩写的大报告基础数据
+- 仓库结构重构为 `src/ + data/ + tests/ + docs/ + skills/`
+- 修复真太阳时入盘中的**早/晚子时索引问题**
+- 落地区县级地理数据最小可运行方案
+- 增加地址解析与歧义处理流程
+- 保持 OpenClaw skill 入口可直接调用
+- 补齐单元 / 集成 / 回归 / CLI 验收测试
 
 ---
 
-## 1. 设计说明
-
-本项目按你的要求做了这几件事：
-
-1. **排盘底层库改为 `iztro`**
-2. **加入真太阳时换算**
-   - 包含经度修正
-   - 包含时间方程（Equation of Time）近似修正
-3. **封装为 OpenClaw Skill**
-4. **补充清晰 README**，方便后续继续开发、接入和维护
-
-> 注意：紫微斗数不同门派对细节解释会有差异。本仓库当前重点是：
-> **先把稳定排盘、时间修正、结构化输出和 OpenClaw skill 接入做好。**
-
----
-
-## 2. 仓库结构
+## 1. 仓库结构
 
 ```text
 ZiWei/
 ├── README.md
 ├── package.json
-└── skills/
-    └── ziwei-doushu/
-        ├── SKILL.md
-        ├── references/
-        │   └── ziwei-knowledge.md
-        └── scripts/
-            ├── cities.json
-            └── ziwei.js
+├── data/
+│   └── geo/
+│       └── cn-district-min.json
+├── docs/
+│   └── testing.md
+├── src/
+│   ├── cli/
+│   │   └── ziwei.js
+│   ├── core/
+│   │   ├── chart.js
+│   │   └── true-solar-time.js
+│   ├── geo/
+│   │   └── resolver.js
+│   └── report/
+│       └── text.js
+├── skills/
+│   └── ziwei-doushu/
+│       ├── SKILL.md
+│       ├── references/
+│       │   └── ziwei-knowledge.md
+│       └── scripts/
+│           └── ziwei.js
+└── tests/
+    ├── fixtures/
+    ├── integration/
+    ├── unit/
+    └── regression.test.js
 ```
 
 ---
 
-## 3. 安装
-
-### 3.1 安装依赖
+## 2. 安装
 
 ```bash
 npm install
 ```
 
-### 3.2 本地试跑
+---
+
+## 3. 使用方法
+
+### 3.1 按区县级地点排盘
 
 ```bash
-node skills/ziwei-doushu/scripts/ziwei.js --date 1990-05-15 --time 14:30 --gender male --place 北京
+npm run chart -- --date 1990-05-15 --time 14:30 --gender male --place 北京市东城区
 ```
+
+### 3.2 用经纬度直传排盘
+
+```bash
+npm run chart -- --date 1990-05-15 --time 14:30 --gender female --longitude 121.4737 --latitude 31.2304 --place 上海
+```
+
+### 3.3 输出 JSON
+
+```bash
+npm run chart -- --date 1988-02-09 --time 23:40 --gender female --place 杭州市余杭区 --json
+```
+
+### 3.4 演示地址歧义处理
+
+```bash
+npm run chart -- --date 1990-05-15 --time 14:30 --gender male --place 和平区
+```
+
+脚本不会盲猜，而是提示候选行政区，让上层 Agent 继续追问用户补充信息。
 
 ---
 
-## 4. 使用方法
+## 4. 真太阳时修复说明
 
-脚本支持两种输入方式。
-
-### 方式 A：直接输入城市名
-
-适合常见城市，脚本会从内置城市表里查经纬度。
-
-```bash
-node skills/ziwei-doushu/scripts/ziwei.js \
-  --date 1990-05-15 \
-  --time 14:30 \
-  --gender male \
-  --place 北京
-```
-
-### 方式 B：直接输入经纬度
-
-适合城市表里没有的地点。
-
-```bash
-node skills/ziwei-doushu/scripts/ziwei.js \
-  --date 1990-05-15 \
-  --time 14:30 \
-  --gender female \
-  --longitude 121.4737 \
-  --latitude 31.2304 \
-  --place 上海
-```
-
----
-
-## 5. 参数说明
-
-| 参数 | 必填 | 示例 | 说明 |
-|---|---|---|---|
-| `--date` | 是 | `1990-05-15` | 公历生日 |
-| `--time` | 是 | `14:30` | 本地标准钟表时间 |
-| `--gender` | 是 | `male` / `female` | 性别 |
-| `--place` | 否 | `北京` | 出生地名称，用于展示或匹配内置城市 |
-| `--longitude` | 否 | `116.4074` | 出生地经度，东经为正 |
-| `--latitude` | 否 | `39.9042` | 出生地纬度，当前主要用于记录 |
-| `--timezone` | 否 | `8` | 时区，默认中国时区 `8` |
-| `--json` | 否 | 无 | 输出 JSON 结构化结果 |
-
-> 推荐策略：
-> - 中国大陆用户优先 `--place 城市名`
-> - 海外或小地名用户优先直接给 `--longitude/--latitude`
-
----
-
-## 6. 真太阳时说明
-
-脚本使用：
-
-- **经度修正**：每 1° 经度约等于 4 分钟
-- **时间方程（Equation of Time）**：用于从平太阳时近似修正到真太阳时
-
-计算近似为：
+当前脚本使用：
 
 ```text
-真太阳时偏移（分钟）
-= 时间方程 + 4 × (出生地经度 - 时区中央经线)
+真太阳时偏移（分钟） = 时间方程 + 4 × (出生地经度 - 时区中央经线)
 ```
 
-以中国东八区为例，中央经线为 `120°E`。
+并且已修复子时边界：
 
-这比单纯只做经度修正更接近“真太阳时”的要求。
+- `00:00-00:59` → `timeIndex=0`（早子时）
+- `23:00-23:59` → `timeIndex=12`（晚子时）
 
----
-
-## 7. 输出内容
-
-默认输出为可读文本，包含：
-
-1. 输入信息
-2. 出生地与经纬度
-3. 真太阳时换算过程
-4. 时辰与时辰索引
-5. 命盘核心信息
-6. 十二宫简表
-7. 重点宫位摘要
-8. 四化与三方四正后续扩展提示
-
-如果传入 `--json`，则输出结构化对象，适合继续喂给大模型生成完整命理报告。
+这比旧实现把全部子时混成一个索引更符合 `iztro` 的入参要求。
 
 ---
 
-## 8. OpenClaw 接入建议
+## 5. 区县级地理数据方案
 
-把 `skills/ziwei-doushu/` 目录放进 OpenClaw skills 目录后，可由上层 Agent 做两段式处理：
+### 5.1 当前已落地的最小可运行版
 
-### 第一段：排盘
-- 收集出生日期、时间、地点、性别
-- 调用 `ziwei.js`
-- 得到盘面和结构化结果
+文件：`data/geo/cn-district-min.json`
 
-### 第二段：报告生成
-- 把脚本输出的结构化盘面信息
-- 连同系统提示词
-- 交给大模型生成完整报告
+特点：
 
-这样做的好处是：
+- 覆盖全国 34 个省级行政区的代表性区县
+- 附加部分高频出生地：东城、黄浦、渝中、吴江、余杭、宝安等
+- 每条数据包含：`code / province / city / district / aliases / longitude / latitude`
+- 支持别名匹配、模糊匹配、歧义报错
 
-- **排盘稳定**：交给程序
-- **文案灵活**：交给模型
-- **后续可换提示词和门派策略**
+### 5.2 扩展方案
 
----
+后续可用同字段结构追加完整区县数据：
 
-## 9. 后续建议
-
-下一步建议继续补这些能力：
-
-1. 接入地名解析 / 地理编码 API
-2. 扩充城市库
-3. 增加四化飞星、三方四正自动摘要
-4. 增加大限 / 流年模块
-5. 做成真正可被 OpenClaw 直接调用的封装命令
-6. 追加测试样例和基准盘验证
+1. 引入国家统计局或民政部标准区划码
+2. 生成全量 JSON/SQLite 数据源
+3. 增加拼音、旧称、简称别名索引
+4. 接入地理编码 API 做在线补齐与缓存
+5. 将歧义处理升级为“候选 + 置信度 + 上层追问模板”
 
 ---
 
-## 10. 免责声明
+## 6. OpenClaw skill 工作流
+
+skill 入口保持在：
+
+```text
+skills/ziwei-doushu/scripts/ziwei.js
+```
+
+推荐上层工作流：
+
+1. 收集生日、时间、性别、出生地
+2. 若出生地不够精确，要求补充到区县级
+3. 调用脚本得到结构化命盘
+4. 若用户需要详细报告，再将 JSON 结果交给大模型扩写
+
+---
+
+## 7. 测试
+
+```bash
+npm test
+npm run test:cli
+```
+
+测试详情见：`docs/testing.md`
+
+---
+
+## 8. 免责声明
 
 本项目用于传统命理研究、产品原型和娱乐体验，不应替代医疗、法律、投资或人生重大决策建议。

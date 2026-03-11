@@ -1,0 +1,29 @@
+[
+  {
+    "name": "beijing-dongcheng-male",
+    "input": {
+      "date": "1990-05-15",
+      "time": "14:30",
+      "gender": "male",
+      "place": "北京市东城区"
+    },
+    "expect": {
+      "locationCode": "110101",
+      "timeIndex": 7,
+      "solarDate": "1990-05-15"
+    }
+  },
+  {
+    "name": "hangzhou-yuhang-female",
+    "input": {
+      "date": "1988-02-09",
+      "time": "23:40",
+      "gender": "female",
+      "place": "杭州市余杭区"
+    },
+    "expect": {
+      "locationCode": "330110",
+      "timeIndex": 12
+    }
+  }
+]
