@@ -19,6 +19,9 @@ function buildTextReport(result) {
   lines.push(`经纬度：${result.location.longitude}, ${result.location.latitude ?? '未提供'}`);
   lines.push(`标准时间：${result.input.date} ${result.input.time}`);
   lines.push(`性别：${result.input.gender === 'male' ? '男' : '女'}`);
+  if (result.input.targetDate) {
+    lines.push(`运限目标日：${result.input.targetDate}`);
+  }
   lines.push('');
   lines.push('【真太阳时修正】');
   lines.push(`时区中央经线：${result.trueSolar.standardMeridian}°`);
@@ -44,6 +47,23 @@ function buildTextReport(result) {
   lines.push('【重点宫位摘要】');
   result.highlights.forEach((item) => lines.push(`- ${item}`));
   lines.push('');
+  lines.push('【扩展结构】');
+  const natalMutagen = result.extensions?.mutagen?.byStar || [];
+  lines.push(`本命四化：${natalMutagen.length ? natalMutagen.map((item) => `${item.star}[${item.mutagen}]@${item.palace}`).join(' / ') : '未识别'}`);
+  const decadalByPalace = result.extensions?.decadal?.byPalace || [];
+  const soulDecadal = decadalByPalace.find((item) => item.palace === '命宫');
+  if (soulDecadal?.range) {
+    lines.push(`命宫大限：${soulDecadal.range[0]}-${soulDecadal.range[1]} 岁（${soulDecadal.heavenlyStem}${soulDecadal.earthlyBranch}）`);
+  }
+  if (result.extensions?.horoscope) {
+    const { horoscope } = result.extensions;
+    lines.push(`目标流年：${horoscope.targetDate}（阳历 ${horoscope.solarDate} / 农历 ${horoscope.lunarDate} / 虚岁 ${horoscope.nominalAge}）`);
+    lines.push(`大限四化：${horoscope.decadal.mutagen.join('、') || '无'}`);
+    lines.push(`流年四化：${horoscope.yearly.mutagen.join('、') || '无'}`);
+  } else {
+    lines.push('流年/运限明细：未请求；如需返回最小结构，请追加 --targetDate YYYY-MM-DD');
+  }
+  lines.push('');
   lines.push('【地址解析】');
   lines.push(`定位来源：${result.location.source}`);
   if (result.location.candidates?.length) {
@@ -52,8 +72,12 @@ function buildTextReport(result) {
   lines.push('');
   lines.push('【后续解读建议】');
   lines.push('- 先用命宫 + 财帛 + 官禄 + 迁移看三方四正。');
-  lines.push('- 再结合四化、夫妻宫、福德宫扩写人生结构。');
-  lines.push('- 若要做完整报告，可将本结果作为结构化盘面输入给上层提示词。');
+  lines.push('- 再结合四化、夫妻宫、福德宫做参考性分析，避免写成确定性结论。');
+  lines.push('- 若需要年度分析，可传入 --targetDate 获取大限/流年最小结构，再交给上层模型扩写。');
+  lines.push('');
+  lines.push('【用途限制与风险提示】');
+  lines.push(`- ${result.usageNotice}`);
+  (result.limitations || []).forEach((item) => lines.push(`- ${item}`));
   return lines.join('\n');
 }
 

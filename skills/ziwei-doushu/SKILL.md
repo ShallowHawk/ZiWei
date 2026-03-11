@@ -7,6 +7,8 @@ description: 基于 iztro 的紫微斗数排盘与结构化输出 skill。支持
 
 先完成稳定排盘，再决定是否扩写解读。
 
+如需面向用户输出解读文案，先遵守 `../../docs/limitations.md` 的风险限制：不要把盘面摘要写成宿命化、恐吓式或重大事项的确定结论。
+
 ## 1. 输入要求
 
 优先收集以下信息：
@@ -27,7 +29,7 @@ description: 基于 iztro 的紫微斗数排盘与结构化输出 skill。支持
 3. 调用脚本获取结构化结果。
 4. 先阅读 `trueSolar`、`chart`、`palaces`、`highlights` 等核心字段。
 5. 若用户只要排盘结果，直接返回文本或 JSON。
-6. 若用户要更长的分析，再结合 `references/ziwei-knowledge.md` 做二次解读。
+6. 若用户要更长的分析，先阅读 `../../docs/limitations.md` 确认风险边界，再结合 `references/ziwei-knowledge.md` 做二次解读。
 
 ## 3. 调用方式
 
@@ -62,8 +64,9 @@ node skills/ziwei-doushu/scripts/ziwei.js --date 1988-02-09 --time 23:40 --gende
 - `chart`：命宫、身宫、农历、干支等核心盘面信息
 - `palaces`：十二宫结构化数据
 - `highlights`：命宫、财帛、官禄、夫妻、迁移、福德等重点摘要
+- `extensions`：扩展结构；已含本命四化、各宫大限，传入 `--targetDate` 后还可得到大限/流年最小结构
 
-如果要写自然语言解读，优先基于结构化字段展开，不要脱离盘面自由发挥。
+如果要写自然语言解读，优先基于结构化字段展开，不要脱离盘面自由发挥；尤其不要把健康、寿命、疾病、婚姻、投资收益等内容写成确定性判断。
 
 ## 5. 资源说明
 

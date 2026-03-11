@@ -13,6 +13,7 @@
 
 > 当前定位：**可测试的产品原型 / skill 基座**。
 > 它适合做排盘、结构化结果输出和上层解读串联；暂不宣称覆盖全国全量区县数据，也不承诺替代专业命理咨询。
+> 更完整的风险边界与限制项见：[`docs/limitations.md`](docs/limitations.md)
 
 ---
 
@@ -127,7 +128,22 @@ npm run chart -- --date 1990-05-15 --time 14:30 --gender female --longitude 121.
 npm run chart -- --date 1988-02-09 --time 23:40 --gender female --place 杭州市余杭区 --json
 ```
 
-### 5.4 演示歧义处理
+### 5.4 获取大限 / 流年最小结构
+
+```bash
+npm run chart -- --date 1990-05-15 --time 14:30 --gender male --place 北京市东城区 --targetDate 2026-03-11 --json
+```
+
+这会在 JSON 中额外返回：
+
+- `extensions.mutagen`
+- `extensions.decadal`
+- `extensions.horoscope.decadal`
+- `extensions.horoscope.yearly`
+
+适合把“本命盘 + 大限 + 流年”的最小结构继续交给上层模型扩写。
+
+### 5.5 演示歧义处理
 
 ```bash
 npm run chart -- --date 1990-05-15 --time 14:30 --gender male --place 和平区
@@ -140,6 +156,8 @@ npm run chart -- --date 1990-05-15 --time 14:30 --gender male --place 和平区
 ## 6. 输出内容说明
 
 默认输出为文本报告，包含：
+
+> 注意：文本中的“重点宫位摘要”和“后续解读建议”应视为**供上层继续分析的素材**，不是对婚姻、健康、财富、寿命等事项的确定性结论。
 
 - 输入信息
 - 出生地与经纬度
@@ -157,8 +175,17 @@ npm run chart -- --date 1990-05-15 --time 14:30 --gender male --place 和平区
 - `chart`
 - `palaces`
 - `highlights`
+- `extensions`
+
+其中 `extensions` 用于承接较容易继续演进的增强字段，目前包含：
+
+- `mutagen.byStar`：本命四化的最小结构（星曜、四化、所在宫位）
+- `decadal.byPalace`：各宫位对应的大限信息（范围、天干地支、年龄序列）
+- `horoscope`：仅当传入 `--targetDate YYYY-MM-DD` 时返回的大限/流年最小结构
 
 这使它比较适合接到 Agent、工作流引擎或上层大模型提示链中。
+
+同时，JSON 中会附带 `usageNotice` 与 `limitations` 字段，用于提醒调用方避免把盘面摘要直接包装成重大事项结论。
 
 ---
 
@@ -193,6 +220,8 @@ npm run geo:build
 ```
 
 构建说明与来源调研见：`docs/geo-data-plan.md`
+
+从可维护性与运行成本角度的评估见：`docs/maintenance-cost.md`
 
 解析器会优先使用 `cn-district-full.json`，并自动合并 `cn-district-min.json` 作为兜底。
 
@@ -253,4 +282,6 @@ npm run test:cli
 
 本项目用于传统命理研究、产品原型验证与娱乐体验。
 
-它不应替代医疗、法律、投资或其他重大人生决策建议。
+它不应替代医疗、法律、投资、婚育或其他重大人生决策建议。
+
+若上层 Agent 需要继续扩写解读，请同时遵守 [`docs/limitations.md`](docs/limitations.md) 中的风险约束，避免输出宿命化、恐吓式或确定性判断。

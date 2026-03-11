@@ -30,10 +30,12 @@ function buildNames(item) {
 
 function scoreCandidate(query, item) {
   const normalizedQuery = normalizePlace(query);
+  if (!normalizedQuery) return 0;
   const names = buildNames(item);
   let best = 0;
   for (const name of names) {
     const normalizedName = normalizePlace(name);
+    if (!normalizedName) continue;
     if (normalizedName === normalizedQuery) best = Math.max(best, 100);
     else if (normalizedName.includes(normalizedQuery) || normalizedQuery.includes(normalizedName)) best = Math.max(best, 80);
     else if (normalizedName.startsWith(normalizedQuery) || normalizedQuery.startsWith(normalizedName)) best = Math.max(best, 70);
