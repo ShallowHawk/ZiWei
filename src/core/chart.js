@@ -29,6 +29,13 @@ function normalizeGender(input) {
   throw new Error('性别仅支持 male / female');
 }
 
+function normalizeTimezone(input) {
+  if (input === undefined || input === null || input === '') return 8;
+  const value = Number(input);
+  if (!Number.isFinite(value)) throw new Error('时区需为有效数字，例如 8 或 9');
+  return value;
+}
+
 function summarizePalace(palace) {
   return {
     name: palace.name,
@@ -66,7 +73,7 @@ function getPalace(chart, name) {
 
 function buildChart(input) {
   const gender = normalizeGender(input.gender);
-  const timezone = input.timezone ? Number(input.timezone) : 8;
+  const timezone = normalizeTimezone(input.timezone);
   const birth = parseBirthDateTime(input.date, input.time);
   const location = resolveLocation(input);
   const baseDate = new Date(birth.year, birth.month - 1, birth.day, birth.hour, birth.minute, 0, 0);
@@ -118,6 +125,7 @@ module.exports = {
   buildChart,
   parseBirthDateTime,
   normalizeGender,
+  normalizeTimezone,
   summarizePalace,
   palaceOneLine,
 };

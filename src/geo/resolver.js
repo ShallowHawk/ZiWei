@@ -1,9 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 
-const dataset = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '../../data/geo/cn-district-min.json'), 'utf8')
-);
+const fullDatasetPath = path.join(__dirname, '../../data/geo/cn-district-full.json');
+const minDatasetPath = path.join(__dirname, '../../data/geo/cn-district-min.json');
+const fullDataset = fs.existsSync(fullDatasetPath)
+  ? JSON.parse(fs.readFileSync(fullDatasetPath, 'utf8'))
+  : [];
+const minDataset = JSON.parse(fs.readFileSync(minDatasetPath, 'utf8'));
+const dataset = Array.from(new Map([...fullDataset, ...minDataset].map((item) => [item.code, item])).values());
 
 function normalizePlace(input) {
   return String(input || '')
