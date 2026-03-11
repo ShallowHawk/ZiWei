@@ -7,7 +7,7 @@
     "chart": "node src/cli/ziwei.js",
     "geo:build": "node scripts/build-cn-admin-db.js",
     "test": "node --test tests/*.test.js tests/**/*.test.js",
-    "test:cli": "node src/cli/ziwei.js --date 1990-05-15 --time 14:30 --gender male --place 北京市东城区 > /tmp/ziwei-cli.txt && node src/cli/ziwei.js --date 1988-02-09 --time 23:40 --gender female --place 杭州市余杭区 --json > /tmp/ziwei-cli.json && node src/cli/ziwei.js --date 1990-05-15 --time 14:30 --gender male --place 和平区 2> /tmp/ziwei-cli-err.txt ; test $? -ne 0 && grep -q '地点存在歧义' /tmp/ziwei-cli-err.txt",
+    "test:cli": "node --test tests/cli/*.test.js",
     "test:sample": "node src/cli/ziwei.js --date 1990-05-15 --time 14:30 --gender male --place 北京市东城区"
   },
   "dependencies": {

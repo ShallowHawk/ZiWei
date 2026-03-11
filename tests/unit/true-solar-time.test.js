@@ -12,9 +12,32 @@ test('early zi hour maps to timeIndex 0', () => {
   assert.equal(getTimeIndex(date), 0);
 });
 
+test('timeIndex boundaries stay stable around zi-hour split points', () => {
+  assert.equal(getTimeIndex(new Date(2026, 2, 11, 0, 59, 0, 0)), 0);
+  assert.equal(getTimeIndex(new Date(2026, 2, 11, 1, 0, 0, 0)), 1);
+  assert.equal(getTimeIndex(new Date(2026, 2, 11, 22, 59, 0, 0)), 11);
+  assert.equal(getTimeIndex(new Date(2026, 2, 11, 23, 0, 0, 0)), 12);
+});
+
 test('true solar time applies longitude and equation of time', () => {
   const date = new Date(1990, 4, 15, 14, 30, 0, 0);
   const result = applyTrueSolarTime(date, 116.4074, 8);
   assert.ok(result.totalOffset < 0);
   assert.equal(Math.round(result.longitudeCorrection), -14);
+});
+
+test('true solar time can cross into previous day near western boundary', () => {
+  const date = new Date(1990, 4, 15, 0, 5, 0, 0);
+  const result = applyTrueSolarTime(date, 73.5, 8);
+  assert.equal(result.corrected.getDate(), 14);
+  assert.equal(result.corrected.getHours(), 21);
+  assert.ok(result.totalOffset < -180);
+});
+
+test('true solar time can cross into next day near eastern boundary', () => {
+  const date = new Date(1990, 4, 15, 22, 59, 0, 0);
+  const result = applyTrueSolarTime(date, 134.5, 8);
+  assert.equal(result.corrected.getDate(), 16);
+  assert.equal(result.corrected.getHours(), 0);
+  assert.ok(result.totalOffset > 60);
 });

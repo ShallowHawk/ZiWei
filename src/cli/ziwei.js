@@ -23,6 +23,7 @@ function help() {
   console.log('用法：');
   console.log('  node src/cli/ziwei.js --date 1990-05-15 --time 14:30 --gender male --place 北京市东城区');
   console.log('  node src/cli/ziwei.js --date 1990-05-15 --time 14:30 --gender female --longitude 121.4737 --latitude 31.2304 --place 上海 --json');
+  console.log('  node src/cli/ziwei.js --date 1990-05-15 --time 14:30 --gender male --place 北京市东城区 --targetDate 2026-03-11 --json');
 }
 
 function main() {
