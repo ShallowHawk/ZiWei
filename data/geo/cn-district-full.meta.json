@@ -1,248 +1,105 @@
 {
-  "schemaVersion": 1,
-  "generatedAt": "2026-03-11T11:44:51.719Z",
+  "schemaVersion": 2,
+  "generatedAt": "2026-03-11T11:57:00.318Z",
+  "build": {
+    "concurrency": 4,
+    "retry": 4,
+    "requestDelayMs": 120,
+    "cacheDir": "data/geo/.cache/aliyun-areas-v3"
+  },
   "source": {
     "primary": "https://geo.datav.aliyun.com/areas_v3/bound",
-    "note": "公开 GeoJSON 行政区划 adcode + center 点；适合离线行政区划检索和真太阳时经度修正。台湾省子级数据在该源中不完整。"
+    "patch": "data/geo/cn-district-min.json",
+    "note": "主数据来自阿里云 DataV areas_v3；构建时启用磁盘缓存，并合并最小补丁集补足台湾/港澳/高频样例。公开源对台湾省子级覆盖仍不完整。"
   },
   "stats": {
     "provinces": 34,
-    "citiesFetched": 160,
-    "districtRecords": 1159,
+    "provincesCovered": 34,
+    "citiesFetched": 363,
+    "districtRecords": 2875,
+    "fallbackCityAsDistrict": 34,
+    "patchRecordsMerged": 1,
+    "cacheHits": 174,
+    "cacheWrites": 189,
     "skipped": [
       {
-        "code": "360400",
-        "name": "江西省九江市",
+        "code": "419001",
+        "name": "河南省济源市",
         "reason": "HTTP 403"
       },
       {
-        "code": "360700",
-        "name": "江西省赣州市",
+        "code": "429006",
+        "name": "湖北省天门市",
         "reason": "HTTP 403"
       },
       {
-        "code": "360600",
-        "name": "江西省鹰潭市",
+        "code": "429004",
+        "name": "湖北省仙桃市",
         "reason": "HTTP 403"
       },
       {
-        "code": "360100",
-        "name": "江西省南昌市",
+        "code": "429005",
+        "name": "湖北省潜江市",
         "reason": "HTTP 403"
       },
       {
-        "code": "361000",
-        "name": "江西省抚州市",
+        "code": "429021",
+        "name": "湖北省神农架林区",
         "reason": "HTTP 403"
       },
       {
-        "code": "420000",
-        "name": "湖北省",
+        "code": "442000",
+        "name": "广东省中山市",
         "reason": "HTTP 403"
       },
       {
-        "code": "321300",
-        "name": "江苏省宿迁市",
+        "code": "441900",
+        "name": "广东省东莞市",
         "reason": "HTTP 403"
       },
       {
-        "code": "410000",
-        "name": "河南省",
+        "code": "460400",
+        "name": "海南省儋州市",
         "reason": "HTTP 403"
       },
       {
-        "code": "360500",
-        "name": "江西省新余市",
-        "reason": "HTTP 498"
-      },
-      {
-        "code": "430000",
-        "name": "湖南省",
+        "code": "469005",
+        "name": "海南省文昌市",
         "reason": "HTTP 403"
       },
       {
-        "code": "440000",
-        "name": "广东省",
+        "code": "469002",
+        "name": "海南省琼海市",
         "reason": "HTTP 403"
       },
       {
-        "code": "460000",
-        "name": "海南省",
-        "reason": "HTTP 498"
-      },
-      {
-        "code": "510000",
-        "name": "四川省",
+        "code": "469001",
+        "name": "海南省五指山市",
         "reason": "HTTP 403"
       },
       {
-        "code": "370600",
-        "name": "山东省烟台市",
+        "code": "469021",
+        "name": "海南省定安县",
         "reason": "HTTP 403"
       },
       {
-        "code": "370200",
-        "name": "山东省青岛市",
+        "code": "469006",
+        "name": "海南省万宁市",
         "reason": "HTTP 403"
       },
       {
-        "code": "370300",
-        "name": "山东省淄博市",
+        "code": "469007",
+        "name": "海南省东方市",
         "reason": "HTTP 403"
       },
       {
-        "code": "370700",
-        "name": "山东省潍坊市",
+        "code": "469022",
+        "name": "海南省屯昌县",
         "reason": "HTTP 403"
       },
       {
-        "code": "370800",
-        "name": "山东省济宁市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "371100",
-        "name": "山东省日照市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "500000",
-        "name": "重庆市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "370400",
-        "name": "山东省枣庄市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "370100",
-        "name": "山东省济南市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "370500",
-        "name": "山东省东营市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "371000",
-        "name": "山东省威海市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "371300",
-        "name": "山东省临沂市",
-        "reason": "HTTP 498"
-      },
-      {
-        "code": "450300",
-        "name": "广西壮族自治区桂林市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "450800",
-        "name": "广西壮族自治区贵港市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "450200",
-        "name": "广西壮族自治区柳州市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "450100",
-        "name": "广西壮族自治区南宁市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "450500",
-        "name": "广西壮族自治区北海市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "450700",
-        "name": "广西壮族自治区钦州市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "450400",
-        "name": "广西壮族自治区梧州市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "451100",
-        "name": "广西壮族自治区贺州市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "451200",
-        "name": "广西壮族自治区河池市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "370900",
-        "name": "山东省泰安市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "450900",
-        "name": "广西壮族自治区玉林市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "451300",
-        "name": "广西壮族自治区来宾市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "451000",
-        "name": "广西壮族自治区百色市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "530000",
-        "name": "云南省",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "540000",
-        "name": "西藏自治区",
-        "reason": "HTTP 498"
-      },
-      {
-        "code": "610000",
-        "name": "陕西省",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "520000",
-        "name": "贵州省",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "620000",
-        "name": "甘肃省",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "640000",
-        "name": "宁夏回族自治区",
-        "reason": "HTTP 498"
-      },
-      {
-        "code": "630000",
-        "name": "青海省",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "371700",
-        "name": "山东省菏泽市",
-        "reason": "HTTP 403"
-      },
-      {
-        "code": "371400",
-        "name": "山东省德州市",
+        "code": "620200",
+        "name": "甘肃省嘉峪关市",
         "reason": "HTTP 403"
       },
       {
@@ -251,40 +108,134 @@
         "reason": "HTTP 403"
       },
       {
-        "code": "371600",
-        "name": "山东省滨州市",
+        "code": "659004",
+        "name": "新疆维吾尔自治区五家渠市",
         "reason": "HTTP 403"
       },
       {
-        "code": "371500",
-        "name": "山东省聊城市",
+        "code": "659001",
+        "name": "新疆维吾尔自治区石河子市",
         "reason": "HTTP 403"
       },
       {
-        "code": "650000",
-        "name": "新疆维吾尔自治区",
-        "reason": "HTTP 498"
-      },
-      {
-        "code": "451400",
-        "name": "广西壮族自治区崇左市",
+        "code": "659003",
+        "name": "新疆维吾尔自治区图木舒克市",
         "reason": "HTTP 403"
       },
       {
-        "code": "810000",
-        "name": "香港特别行政区",
-        "reason": "HTTP 498"
-      },
-      {
-        "code": "820000",
-        "name": "澳门特别行政区",
+        "code": "659002",
+        "name": "新疆维吾尔自治区阿拉尔市",
         "reason": "HTTP 403"
       },
       {
-        "code": "350400",
-        "name": "福建省三明市",
+        "code": "469024",
+        "name": "海南省临高县",
+        "reason": "HTTP 403"
+      },
+      {
+        "code": "469023",
+        "name": "海南省澄迈县",
+        "reason": "HTTP 403"
+      },
+      {
+        "code": "469026",
+        "name": "海南省昌江黎族自治县",
+        "reason": "HTTP 403"
+      },
+      {
+        "code": "469025",
+        "name": "海南省白沙黎族自治县",
+        "reason": "HTTP 403"
+      },
+      {
+        "code": "659005",
+        "name": "新疆维吾尔自治区北屯市",
+        "reason": "HTTP 403"
+      },
+      {
+        "code": "659007",
+        "name": "新疆维吾尔自治区双河市",
+        "reason": "HTTP 403"
+      },
+      {
+        "code": "659006",
+        "name": "新疆维吾尔自治区铁门关市",
+        "reason": "HTTP 403"
+      },
+      {
+        "code": "659008",
+        "name": "新疆维吾尔自治区可克达拉市",
+        "reason": "HTTP 403"
+      },
+      {
+        "code": "469027",
+        "name": "海南省乐东黎族自治县",
+        "reason": "HTTP 403"
+      },
+      {
+        "code": "469030",
+        "name": "海南省琼中黎族苗族自治县",
+        "reason": "HTTP 403"
+      },
+      {
+        "code": "469028",
+        "name": "海南省陵水黎族自治县",
+        "reason": "HTTP 403"
+      },
+      {
+        "code": "469029",
+        "name": "海南省保亭黎族苗族自治县",
+        "reason": "HTTP 403"
+      },
+      {
+        "code": "659010",
+        "name": "新疆维吾尔自治区胡杨河市",
+        "reason": "HTTP 403"
+      },
+      {
+        "code": "659009",
+        "name": "新疆维吾尔自治区昆玉市",
         "reason": "HTTP 403"
       }
     ]
+  },
+  "coverage": {
+    "provinceNames": [
+      "安徽省",
+      "澳门特别行政区",
+      "北京市",
+      "重庆市",
+      "福建省",
+      "甘肃省",
+      "广东省",
+      "广西壮族自治区",
+      "贵州省",
+      "海南省",
+      "河北省",
+      "河南省",
+      "黑龙江省",
+      "湖北省",
+      "湖南省",
+      "吉林省",
+      "江苏省",
+      "江西省",
+      "辽宁省",
+      "内蒙古自治区",
+      "宁夏回族自治区",
+      "青海省",
+      "山东省",
+      "山西省",
+      "陕西省",
+      "上海市",
+      "四川省",
+      "台湾省",
+      "天津市",
+      "西藏自治区",
+      "香港特别行政区",
+      "新疆维吾尔自治区",
+      "云南省",
+      "浙江省"
+    ],
+    "missingProvinceNames": []
   }
 }
